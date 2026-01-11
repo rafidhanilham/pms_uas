@@ -1,2 +1,163 @@
-CREATE DATABASE db_pms;
-USE db_pms;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Waktu pembuatan: 11 Jan 2026 pada 16.15
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `db_pms`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `programs`
+--
+
+CREATE TABLE `programs` (
+  `program_id` int(11) NOT NULL,
+  `nama_program` varchar(255) NOT NULL,
+  `manager_id` int(11) NOT NULL,
+  `tanggal_mulai` date NOT NULL,
+  `tanggal_selesai` date NOT NULL,
+  `status` enum('Planning','In Progress','Completed','On Hold') DEFAULT 'Planning',
+  `deskripsi` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `programs`
+--
+
+INSERT INTO `programs` (`program_id`, `nama_program`, `manager_id`, `tanggal_mulai`, `tanggal_selesai`, `status`, `deskripsi`, `created_at`) VALUES
+(1, 'Promo Bulan Januari', 4, '2026-01-01', '2026-01-31', 'Planning', '- Buatkan potongan harga\r\n- Buatkan promo bundling menarik', '2026-01-11 15:13:25');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tasks`
+--
+
+CREATE TABLE `tasks` (
+  `task_id` int(11) NOT NULL,
+  `program_id` int(11) NOT NULL,
+  `nama_tugas` varchar(255) NOT NULL,
+  `assigned_to` int(11) DEFAULT NULL,
+  `deadline` date NOT NULL,
+  `status` enum('Pending','In Progress','Completed') DEFAULT 'Pending'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tasks`
+--
+
+INSERT INTO `tasks` (`task_id`, `program_id`, `nama_tugas`, `assigned_to`, `deadline`, `status`) VALUES
+(1, 1, 'Promo buy 1 get 1', 5, '2026-01-17', '');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `users`
+--
+
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` enum('admin','manager','staff') DEFAULT 'staff',
+  `jabatan` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `users`
+--
+
+INSERT INTO `users` (`user_id`, `nama`, `email`, `password`, `role`, `jabatan`, `created_at`) VALUES
+(4, 'Sofiyul Qolbi', 'qolbi@gmail.com', '', 'staff', 'Marketing Manager', '2026-01-11 15:11:19'),
+(5, 'Rafidhan Ilham Muharram', 'rafid@gmail.com', '', 'staff', 'Digital Marketing Staff', '2026-01-11 15:11:30'),
+(6, 'Gregorius Ngalang', 'ngalang@gmail.com', '', 'staff', 'Social Media Specialist', '2026-01-11 15:11:49');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indeks untuk tabel `programs`
+--
+ALTER TABLE `programs`
+  ADD PRIMARY KEY (`program_id`),
+  ADD KEY `manager_id` (`manager_id`);
+
+--
+-- Indeks untuk tabel `tasks`
+--
+ALTER TABLE `tasks`
+  ADD PRIMARY KEY (`task_id`),
+  ADD KEY `program_id` (`program_id`),
+  ADD KEY `fk_user_task` (`assigned_to`);
+
+--
+-- Indeks untuk tabel `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT untuk tabel yang dibuang
+--
+
+--
+-- AUTO_INCREMENT untuk tabel `programs`
+--
+ALTER TABLE `programs`
+  MODIFY `program_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT untuk tabel `tasks`
+--
+ALTER TABLE `tasks`
+  MODIFY `task_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT untuk tabel `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+--
+
+--
+-- Ketidakleluasaan untuk tabel `programs`
+--
+ALTER TABLE `programs`
+  ADD CONSTRAINT `programs_ibfk_1` FOREIGN KEY (`manager_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Ketidakleluasaan untuk tabel `tasks`
+--
+ALTER TABLE `tasks`
+  ADD CONSTRAINT `fk_user_task` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`user_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`program_id`) REFERENCES `programs` (`program_id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
