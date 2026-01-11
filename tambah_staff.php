@@ -21,7 +21,7 @@
 
             <div class="form-group">
                 <label>Email Korporat:</label>
-                <input type="email" name="email" placeholder="contoh@petrokimia.com" required>
+                <input type="email" name="email" placeholder="contoh@email.com" required>
             </div>
 
             <div class="form-group">

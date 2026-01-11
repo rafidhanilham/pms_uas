@@ -1,13 +1,21 @@
 <?php
 include 'koneksi.php';
-$id = $_GET['id'];
 
-$query = "DELETE FROM programs WHERE program_id = '$id'";
+if (isset($_POST['confirm_delete'])) {
+    $id = $_POST['id'];
 
-if (mysqli_query($conn, $query)) {
-    // Tambahkan parameter status=deleted
-    header("Location: data_program.php?status=deleted");
+    // Query hapus
+    $query = "DELETE FROM programs WHERE program_id = '$id'";
+    $result = mysqli_query($conn, $query);
+
+    if ($result) {
+        // Kembali ke halaman utama dengan status deleted
+        header("Location: data_program.php?status=deleted");
+    } else {
+        echo "Gagal menghapus data: " . mysqli_error($conn);
+    }
 } else {
-    echo "Gagal menghapus program: " . mysqli_error($conn);
+    // Jika diakses tanpa form, lempar balik
+    header("Location: data_program.php");
 }
 ?>
