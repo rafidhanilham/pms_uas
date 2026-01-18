@@ -76,11 +76,116 @@ $total_prog = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FRO
             border-radius: 5px;
             cursor: pointer;
         }
+
+        /* Navigasi Action Bar */
+        .nav-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap; /* Tombol akan turun jika tidak muat */
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        /* Form Filter */
+        .nav-actions form {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+            width: 100%; /* Default lebar penuh di HP */
+        }
+
+        .nav-actions select {
+            padding: 8px;
+            border-radius: 5px;
+            flex: 1; /* Dropdown membagi rata ruang yang ada */
+            min-width: 120px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .styled-table {
+            width: 100%;
+            min-width: 450px; /* Menjaga agar kolom tidak terlalu berhimpitan */
+            border-collapse: collapse;
+            font-size: 13px; /* Ukuran font lebih kecil untuk mobile */
+        }
+
+        .styled-table th, .styled-table td {
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        @media screen and (max-width: 600px) {
+        h2 { font-size: 1.2rem; }
+        .styled-table td { font-size: 12px; }
+        }
+
+        /* Media Query Khusus Layar Kecil (HP Poco) */
+        @media screen and (max-width: 600px) {
+            .dashboard-cards {
+                flex-direction: column; /* Kartu statistik jadi tumpuk atas-bawah */
+            }
+
+            .nav-actions {
+                flex-direction: column; /* Tombol tambah jadi tumpuk */
+                align-items: stretch;
+            }
+
+            .nav-actions form {
+                flex-direction: column; /* Dropdown "Semua Program" & "Staff" jadi tumpuk */
+                margin-left: 0;
+            }
+
+            .nav-actions select, .btn-filter {
+                width: 100%; /* Lebar penuh di layar kecil */
+            }
+            .filter-form {
+                display: flex; 
+                gap: 10px; 
+                margin-left: auto;
+                width: auto;}
+
+            .filter-buttons {
+                display: flex;
+                gap: 5px;
+            }
+
+            .btn-reset {
+                text-decoration:none; 
+                color:#666; 
+                font-size:12px; 
+                align-self:center; 
+                margin-left:5px;
+            }
+
+        @media screen and (max-width: 600px) {
+            .filter-form {
+                flex-direction: column;
+                width: 100%;
+                margin-left: 0;
+            }
+            .btn-group {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 5px;
+            }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="container">
     <header>
         <h1>Program Management System</h1>
         <p>Project UAS - Teknik Informatika</p>
@@ -109,13 +214,15 @@ $total_prog = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FRO
             </a>
         </div>
 
-        <div class="nav-actions" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-            <a href="tambah_program.php" class="btn-add" style="background-color: #27ae60;">+ Program</a>
-            <a href="tambah_tugas.php" class="btn-add">+ Tugas</a>
-            <a href="tambah_staff.php" class="btn-add" style="background-color: #d35400;">+ Staff Baru</a>
+        <div class="nav-actions">
+            <div class="btn-group">
+                <a href="tambah_program.php" class="btn-add" style="background-color: #27ae60;">+ Program</a>
+                <a href="tambah_tugas.php" class="btn-add">+ Tugas</a>
+                <a href="tambah_staff.php" class="btn-add" style="background-color: #d35400;">+ Staff</a>
+            </div>
             
-            <form method="GET" action="index.php" style="display: flex; gap: 10px; margin-left: auto;">
-                <select name="program_id" style="padding:8px; border-radius:5px;">
+            <form method="GET" action="index.php" class="filter-form">
+                <select name="program_id">
                     <option value="">-- Semua Program --</option>
                     <?php
                     $p_list = mysqli_query($conn, "SELECT * FROM programs");
@@ -126,7 +233,7 @@ $total_prog = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FRO
                     ?>
                 </select>
 
-                <select name="user_id" style="padding:8px; border-radius:5px;">
+                <select name="user_id">
                     <option value="">-- Semua Staff --</option>
                     <?php
                     $u_list = mysqli_query($conn, "SELECT * FROM users");
@@ -137,55 +244,57 @@ $total_prog = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FRO
                     ?>
                 </select>
                 
-                <button type="submit" class="btn-filter">Cari</button>
-                <a href="index.php" style="text-decoration:none; color:#666; font-size:12px; align-self:center; margin-left:5px;">Reset</a>
+                <div class="filter-buttons">
+                    <button type="submit" class="btn-filter">Cari</button>
+                    <a href="index.php" class="btn-reset">Reset</a>
+                </div>
             </form>
         </div>
     </header>
 
     <main>
+        <main>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
             <h2>Daftar Tugas Aktif</h2>
         </div>
         
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>Nama Tugas</th>
-                    <th>Program</th>
-                    <th>Penanggung Jawab</th>
-                    <th>Deadline</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (mysqli_num_rows($result) > 0): ?>
-                    <?php while($row = mysqli_fetch_assoc($result)): ?>
+        <div class="table-container">
+            <table class="styled-table">
+                <thead>
                     <tr>
-                        <td><strong><?php echo htmlspecialchars($row['nama_tugas']); ?></strong></td>
-                        <td><?php echo htmlspecialchars($row['nama_program']); ?></td>
-                        <td><?php echo htmlspecialchars($row['penanggung_jawab']); ?></td>
-                        <td><?php echo date('d/m/Y', strtotime($row['deadline'])); ?></td>
-                        <td>
-                            <span class="status-badge <?php echo strtolower(str_replace(' ', '-', $row['status'])); ?>">
-                                <?php echo $row['status']; ?>
-                            </span>
-                        </td>
-                        <td>
-                            <a href="konfirmasi_hapus_tugas.php?id=<?php echo $row['task_id']; ?>&nama=<?php echo urlencode($row['nama_tugas']); ?>" 
-                               class="btn-delete" style="font-size: 12px; padding: 5px 10px;">Hapus</a>
-                        </td>
+                        <th style="width: 30%;">Tugas</th>
+                        <th style="width: 25%;">Program</th>
+                        <th style="width: 25%;">PIC</th>
+                        <th style="width: 20%;">Aksi</th>
                     </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="6" style="text-align: center; padding: 20px;">Tidak ada tugas ditemukan untuk filter ini.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result) > 0): ?>
+                        <?php while($row = mysqli_fetch_assoc($result)): ?>
+                        <tr>
+                            <td>
+                                <strong><?php echo htmlspecialchars($row['nama_tugas']); ?></strong><br>
+                                <small style="color: #666;"><?php echo date('d/m/y', strtotime($row['deadline'])); ?></small>
+                            </td>
+                            <td><?php echo htmlspecialchars($row['nama_program']); ?></td>
+                            <td><?php echo htmlspecialchars($row['penanggung_jawab']); ?></td>
+                            <td>
+                                <a href="konfirmasi_hapus_tugas.php?id=<?php echo $row['task_id']; ?>&nama=<?php echo urlencode($row['nama_tugas']); ?>" 
+                                   class="btn-delete" style="font-size: 10px; padding: 4px 8px;">Hapus</a>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 20px;">Tidak ada tugas ditemukan.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </main>
+    </main>
+</div>
 </div>
 
 </body>
