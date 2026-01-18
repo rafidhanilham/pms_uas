@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 11 Jan 2026 pada 16.15
+-- Waktu pembuatan: 18 Jan 2026 pada 13.12
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -38,13 +38,6 @@ CREATE TABLE `programs` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data untuk tabel `programs`
---
-
-INSERT INTO `programs` (`program_id`, `nama_program`, `manager_id`, `tanggal_mulai`, `tanggal_selesai`, `status`, `deskripsi`, `created_at`) VALUES
-(1, 'Promo Bulan Januari', 4, '2026-01-01', '2026-01-31', 'Planning', '- Buatkan potongan harga\r\n- Buatkan promo bundling menarik', '2026-01-11 15:13:25');
-
 -- --------------------------------------------------------
 
 --
@@ -59,13 +52,6 @@ CREATE TABLE `tasks` (
   `deadline` date NOT NULL,
   `status` enum('Pending','In Progress','Completed') DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data untuk tabel `tasks`
---
-
-INSERT INTO `tasks` (`task_id`, `program_id`, `nama_tugas`, `assigned_to`, `deadline`, `status`) VALUES
-(1, 1, 'Promo buy 1 get 1', 5, '2026-01-17', '');
 
 -- --------------------------------------------------------
 
@@ -82,15 +68,6 @@ CREATE TABLE `users` (
   `jabatan` varchar(50) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data untuk tabel `users`
---
-
-INSERT INTO `users` (`user_id`, `nama`, `email`, `password`, `role`, `jabatan`, `created_at`) VALUES
-(4, 'Sofiyul Qolbi', 'qolbi@gmail.com', '', 'staff', 'Marketing Manager', '2026-01-11 15:11:19'),
-(5, 'Rafidhan Ilham Muharram', 'rafid@gmail.com', '', 'staff', 'Digital Marketing Staff', '2026-01-11 15:11:30'),
-(6, 'Gregorius Ngalang', 'ngalang@gmail.com', '', 'staff', 'Social Media Specialist', '2026-01-11 15:11:49');
 
 --
 -- Indexes for dumped tables
@@ -138,7 +115,7 @@ ALTER TABLE `tasks`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
