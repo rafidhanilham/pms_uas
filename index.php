@@ -83,7 +83,7 @@ $total_prog = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FRO
 <div class="container">
     <header>
         <h1>Program Management System</h1>
-        <p>Project UAS - Teknik Informatika (Rafidhan Ilham)</p>
+        <p>Project UAS - Teknik Informatika</p>
         
         <?php if (isset($_GET['status'])): ?>
             <div class="php-alert">
